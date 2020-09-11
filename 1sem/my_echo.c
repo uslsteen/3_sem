@@ -1,34 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-
-enum COND
-{
-	UP = 0,
-	DOWN,
-};
-
-void echo_call(int argc, char* argv[]);
-
-int main(int argc, char* argv[])
-{
-	echo_call(argc, argv);
-
-	return 0;
-}
+#include <stdbool.h>
 
 
 void echo_call(int argc, char* argv[])
 {
 	if (argc > 1)
 	{
-		int i = 1, flag = DOWN;
+		int i = 1;
+		bool flag = true;
 
 		if (strcmp(argv[i], "-n") == 0)
 		{
 			i++;
-			flag = UP;
+			flag = false;
 		}
 
 
@@ -37,14 +23,20 @@ void echo_call(int argc, char* argv[])
 			printf("%s", argv[i]);
 
 			if (i != argc - 1)
-			{
 				printf(" ");
-			}
 		}
 
-		if (flag == DOWN)
+		if (flag)
 			printf("\n");
 	}
         else
 		printf("\n");
+}
+
+
+int main(int argc, char* argv[])
+{
+	echo_call(argc, argv);
+
+	return 0;
 }
