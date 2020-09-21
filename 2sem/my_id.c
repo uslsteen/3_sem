@@ -3,6 +3,8 @@
 #include <string.h>
 #include <malloc.h>
 #include <assert.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -10,78 +12,165 @@
 #include <pwd.h>
 
 
-const int list_size = 8;
-/*
-void my_id(int argc, char* argv[])
+const int MAX_LIST_SIZE = 50;
+const int ERROR = -1;
+const int IS_DIGIT = 0;
+const int ISNT_DIGIT = 1;
+
+//! struct for union struct passwd and struct group
+typedef struct User_info
 {
-	int i = 0;
-	uid_t uid = 0;
-	gid_t gid = 0;
-	int process_check = 0;
+    struct passwd* psswd;
+    struct group* grp;
 
-	gid_t* list = (gid_t*)calloc(list_size, sizeof(list[0]));
-	assert(list);
+    gid_t* gr_list;
+    int gr_list_size;
 
-  //uid = getuid();
-	//gid = getgid();
+} User_info;
 
-	if ((process_check = getgroups(list_size, list)) == -1)
-	{
-		printf("Error int func getgroups\n");
-		abort();
-	}
 
-	printf("uid =  %d gid = %d\n", uid, gid);
-
-	for (i = 0; i < list_size; ++i)
-		printf("%d ", list[i]);
-}
-*/
-
-void get_id(int argc, char* argv[])
+//! Function for call my_id without args
+//! @param[in] user - pointer to structure of user_info
+//! @return true if func executed rigth
+bool get_id_wihout_args(User_info* user)
 {
-	struct passwd* res = NULL;
-	struct group* res_gr = NULL;
+    user->psswd = getpwuid(getuid());
+    user->grp = getgrgid(getgid());
 
-	int i = 1;
-	int process_check = 0;
+    if (user->psswd == NULL || user->psswd == NULL)
+    {
+        printf("Error in getpwuid(getuid()) or getgrgid(getgid()).\n");
+        printf("Check this block of code\n");
 
-	gid_t* list = (gid_t*)calloc(list_size, sizeof(list[0]));
-	assert(list);
+        return false;
+    }
 
-	res = getpwnam(argv[i]);
+    if ((user->gr_list_size = getgroups(MAX_LIST_SIZE, user->gr_list)) == -1)
+    {
+        printf("Error in func getgroups.\n");
+        return false;
+    }
 
-	if ((process_check = getgroups(list_size, list)) == -1)
-	{
-		printf("Error int func getgroups\n");
-		abort();
-	}
-
-	printf("uid = %d(%s), gid = %d(%s) ", res->pw_uid, res->pw_name, res->pw_gid, res->pw_name);
-
-	printf("группы = ");
-
-	res_gr = getgrgid(list[list_size - 1]);
-	printf("%d(%s), ", list[list_size - 1], res_gr->gr_name);
-
-	for (i = 0; i < list_size - 1; ++i)
-	{
-		res_gr = getgrgid(list[i]);
-
-		printf("%d(%s) ", list[i], res_gr->gr_name);
-
-		if (i != list_size - 2)
-			printf(", ");
-	}
-
-	printf("\n");
+    return true;
 }
 
-
-int main(int argc, char* argv[])
+//! Function for call my_id with args
+//! @param[in] user - pointer to structure of user_info
+//! @param[in] argv - pointer to buffer argv
+//! @return true if func executed rigth
+bool get_id_with_args(char* argv, User_info* user)
 {
-	//my_id(argc, argv);
-	get_id(argc, argv);
 
-	return 0;
+    if (isdigit(argv[0]))
+    {
+      uid_t uid = strtol(argv, NULL, 0);
+      user->psswd = getpwuid(uid);
+    }
+    else
+      user->psswd = getpwnam(argv);
+
+
+    if (user->psswd == NULL)
+    {
+        printf("id: %s : no such user\n", argv);
+        return false;
+    }
+
+    user->grp = getgrgid(user->psswd->pw_gid);
+
+    if (user->grp == NULL)
+    {
+        printf("Func getgrgid() return NULL.\n");
+        abort();
+    }
+
+    if ((user->gr_list_size = getgrouplist(user->psswd->pw_name, user->psswd->pw_gid, user->gr_list, &(user->gr_list_size))) == -1)
+    {
+        printf("Error in func getgroupd.\n");
+        return false;
+    }
+
+    return true;
+}
+
+//! Constructor for user_info structure
+//! @param[in] user - pointer to structure of user_info
+void User_constructor(User_info* user)
+{
+    user->psswd = NULL;
+    user->grp = NULL;
+
+    user->gr_list_size = MAX_LIST_SIZE;
+
+    user->gr_list = (uid_t*)calloc(user->gr_list_size, sizeof(uid_t));
+    assert(user->gr_list);
+}
+
+
+//! Function for print user info
+//! @param[in] user - pointer to structure of user_info
+void print_usr_info(User_info* user)
+{
+    printf("uid = %d(%s) ", user->psswd->pw_uid, user->psswd->pw_name);
+    printf("gid = %d(%s), ", user->grp->gr_gid, user->grp->gr_name);
+    int list_size = user->gr_list_size;
+
+    printf("группы = ");
+
+    struct group* res_gr = getgrgid(user->gr_list[list_size - 1]);
+    printf("%d(%s), ", user->gr_list[list_size - 1], res_gr->gr_name);
+
+    for (int i = 0; i < list_size - 1; ++i)
+    {
+        res_gr = getgrgid(user->gr_list[i]);
+
+        printf("%d(%s)", user->gr_list[i], res_gr->gr_name);
+
+        if (i != list_size - 2)
+            printf(", ");
+    }
+
+    printf("\n");
+}
+
+
+//! Distructor for user_info structure
+//! @param[in] user - pointer to structure of user_info
+void User_distructor(User_info* user)
+{
+    free(user->gr_list);
+
+    user->psswd = NULL;
+    user->grp = NULL;
+
+    user->gr_list_size = 0;
+}
+
+int main(int argc, char** argv)
+{
+    User_info user;
+
+    User_constructor(&user);
+
+    if (argc == 1)
+    {
+        if(!get_id_wihout_args(&user))
+        {
+            printf("Get_id_without_args returned false.\nSomething went frong\n");
+            return ERROR;
+        }
+    }
+    else if (argc == 2)
+    {
+        if (!get_id_with_args(argv[1], &user))
+            return ERROR;
+    }
+    else
+        printf("id: extra operand \"\"");
+
+    print_usr_info(&user);
+
+    User_distructor(&user);
+
+    return 0;
 }
