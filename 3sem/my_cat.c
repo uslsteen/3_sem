@@ -69,7 +69,7 @@ bool My_read(int fd)
 
 
 
-int main( int argc, char * argv[] )
+int main(int argc, char** argv)
 {
   if (argc == 1 || argv[1][0] == '-')
   {
