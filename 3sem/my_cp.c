@@ -25,28 +25,28 @@ bool My_write(int fd, char* buffer, int res_of_read)
 {
     int res_of_write = 0, written_size = 0;
 
-    while (res_of_write < res_of_read)
+    do
     {
         res_of_write = write(fd, buffer, res_of_read - written_size);
 
         if (res_of_write < 0)
         {
           printf("Negative res of write!\n");
-          return NEGATIVE_VAR;
+          return false;
         }
 
         written_size += res_of_write;
         buffer += written_size;
-    }
+
+    } while (res_of_write < res_of_read);
 
     return true;
 }
 
-
 //! Upgraded func read(...)
 //! @param[in] fd - file descriptor
 //! @return true if func executed rigth
-bool My_read(int fd)
+bool My_read(int fd_srce, int fd_dest)
 {
     int res_of_read = 0;
 
@@ -54,12 +54,12 @@ bool My_read(int fd)
     {
       char buffer[BUF_SIZE];
 
-      if ((res_of_read = read(fd, buffer, BUF_SIZE)) < 0)
+      if ((res_of_read = read(fd_srce, buffer, BUF_SIZE)) < 0)
           return NEGATIVE_VAR;
 
-      if (!My_write(STDOUT_FILENO, buffer, res_of_read))
+      if (!My_write(fd_dest, buffer, res_of_read))
       {
-          printf("Error with writing from buffer to fd");
+          printf("Error with writing from buffer to fd\n");
           return FUNC_PRCSS_ERROR;
       }
     } while (res_of_read != 0);
@@ -68,36 +68,33 @@ bool My_read(int fd)
 }
 
 
+bool Simple_copy(int argc, char** argv)
+{
+  int fd_srce = open(argv[1], O_RDONLY);
+
+  if (fd_srce < 0)
+  {
+    printf("cat: %s: Нет такого файла или каталога\n", argv[1]);
+    return NEGATIVE_VAR;
+  }
+
+  int fd_dest = open(argv[2], O_WRONLY);
+
+  if (fd_dest < 0)
+  {
+    fd_dest = open(argv[2], O_CREAT);
+  }
+
+  My_read(fd_srce, fd_dest);
+
+  return true;
+}
+
 
 int main(int argc, char** argv)
 {
-  if (argc == 1 || argv[1][0] == '-')
-  {
-    if (!My_read(STDIN_FILENO))
-      return FUNC_PRCSS_ERROR;
-
-    return 0;
-  }
-
-  for (int i = 1; i < argc; ++i)
-  {
-    int fd = open(argv[i], O_RDONLY);
-
-    if (fd < 0)
-    {
-      printf("cat: %s: Нет такого файла или каталога\n", argv[i]);
-      return NEGATIVE_VAR;
-    }
-
-    if (!My_read(fd))
-      return FUNC_PRCSS_ERROR;
-
-    if (close(fd) < 0)
-    {
-        printf("Error close func!\n");
-        return FUNC_PRCSS_ERROR;
-    }
-  }
+   if (!Simple_copy(argc, argv))
+    return 1;
 
   return 0;
 }
