@@ -11,8 +11,8 @@ const int BUF_SIZE = 4096;
 //! Enum for beatiful names of errors
 enum ERRORS
 {
-  NEGATIVE_VAR = 0,
-  FUNC_PRCSS_ERROR = 0
+  NEGATIVE_VAR = 1,
+  FUNC_PRCSS_ERROR = 2
 };
 
 
@@ -21,7 +21,7 @@ enum ERRORS
 //! @param[in] buffer for writing from buffer to fd
 //! @param[in] res_of_read - result of one iteration my_read func
 //! @return true if func executed rigth
-bool My_write(int fd, char* buffer, int res_of_read)
+int My_write(int fd, char* buffer, int res_of_read)
 {
     int res_of_write = 0, written_size = 0;
 
@@ -31,7 +31,7 @@ bool My_write(int fd, char* buffer, int res_of_read)
 
         if (res_of_write < 0)
         {
-          printf("Negative res of write!\n");
+          perror()"Negative res of write!\n");
           return NEGATIVE_VAR;
         }
 
@@ -39,14 +39,14 @@ bool My_write(int fd, char* buffer, int res_of_read)
         buffer += written_size;
     }
 
-    return true;
+    return 0;
 }
 
 
 //! Upgraded func read(...)
 //! @param[in] fd - file descriptor
 //! @return true if func executed rigth
-bool My_read(int fd)
+int My_read(int fd)
 {
     int res_of_read = 0;
 
@@ -55,16 +55,16 @@ bool My_read(int fd)
       char buffer[BUF_SIZE];
 
       if ((res_of_read = read(fd, buffer, BUF_SIZE)) < 0)
-          return NEGATIVE_VAR;
+          return NEGATIVE_VAR;bool
 
       if (!My_write(STDOUT_FILENO, buffer, res_of_read))
       {
-          printf("Error with writing from buffer to fd");
+          perror("Error with writing from buffer to fd");
           return FUNC_PRCSS_ERROR;
       }
     } while (res_of_read != 0);
 
-    return true;
+    return 0;
 }
 
 
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 
     if (fd < 0)
     {
-      printf("cat: %s: Нет такого файла или каталога\n", argv[i]);
+      perror("cat: %s: Нет такого файла или каталога\n", argv[i]);
       return NEGATIVE_VAR;
     }
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
 
     if (close(fd) < 0)
     {
-        printf("Error close func!\n");
+        perror("Error close func!\n");
         return FUNC_PRCSS_ERROR;
     }
   }
