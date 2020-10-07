@@ -14,20 +14,21 @@ const int ERROR = -1;
 const int WITH_OPT = 1;
 const int BUF_SIZE = 4096;
 
+
 //! Structure for counter function
 struct Counter_t
 {
-  int num_of_bytes;
-  int num_of_word;
   int num_of_str;
+  int num_of_word;
+  int num_of_bytes;
 };
 
 
 struct option longopts[] =
-{
-  {"w", 0, NULL, 'w'},
-  {0, 0, 0, 0},
-};
+ {
+   {"wc", 0, NULL, 'w'},
+   {0, 0, 0, 0},
+ };
 
 const char optstring[] = "";
 
@@ -44,6 +45,7 @@ int My_exec(char** argv, bool opt);
 int Word_counter(char* buffer, int buf_size, bool* pos_in_word);
 int Str_counter(char* buffer, int buf_size);
 int Counter_func(int fd, struct Counter_t* cntrs);
+
 
 
 int main(int argc, char** argv)
@@ -90,6 +92,7 @@ int Getopt_process(int argc, char** argv)
 }
 
 
+
 void Print_time(struct timespec start_clock, struct timespec final_clock)
 {
   double secs = final_clock.tv_sec - start_clock.tv_sec;
@@ -99,6 +102,7 @@ void Print_time(struct timespec start_clock, struct timespec final_clock)
 
   printf("Process time in msecs : %lf\n", time);
 }
+
 
 
 int My_exec(char** argv, bool opt)
@@ -120,49 +124,28 @@ int My_exec(char** argv, bool opt)
   //! if i am child then execut
   if (pid == 0)
   {
-    printf("fd[0] = %d, fd[1] = %d\n", fd[0], fd[1]);
-
     if (opt)
     {
-      if (close(fd[0] == -1))
-      {
-        perror("Error in close fd[0]\n");
-        return ERROR;
-      }
-
+      close(fd[0]);
       fd[1] = dup2(fd[1], STDOUT_FILENO);
-      printf("fd[0] = %d, fd[1] = %d\n", fd[0], fd[1]);
     }
 
     execvp(argv[optind], argv + optind);
-
     exit(0);
   }
 
-  else if (pid > 0)
+
+  if (opt)
   {
+    close(fd[1]);
     struct Counter_t cntr = {0, 0, 0};
+    Counter_func(fd[0], &cntr);
+    close(fd[0]);
 
-    if (opt)
-    {
-      if (close(fd[1]) == -1)
-      {
-        perror("Error in close fd[1]\n");
-        return ERROR;
-      }
-
-      Counter_func(fd[0], &cntr);
-
-      if (close(fd[0]) == -1)
-      {
-        perror("Error in close fd[0]\n");
-        return ERROR;
-      }
-
-      printf("Relust of counter func:\n");
-      printf("bytes = %d\nwords = %d\nstrings = %d\n", cntr.num_of_bytes, cntr.num_of_word, cntr.num_of_str);
-    }
+    printf("Relust of counter func:\n");
+    printf("bytes = %d\nwords = %d\nstrings = %d\n", cntr.num_of_bytes, cntr.num_of_word, cntr.num_of_str);
   }
+
 
   if (wait(&status) < 0)
   {
@@ -182,6 +165,7 @@ int My_exec(char** argv, bool opt)
   return 0;
 }
 
+
 int Word_counter(char* buffer, int buf_size, bool* pos_in_word)
 {
   int i = 0, num_of_words = 0;
@@ -200,6 +184,7 @@ int Word_counter(char* buffer, int buf_size, bool* pos_in_word)
   return num_of_words;
 }
 
+
 int Str_counter(char* buffer, int buf_size)
 {
   int i = 0, num_of_str = 0;
@@ -213,6 +198,7 @@ int Str_counter(char* buffer, int buf_size)
    return num_of_str;
 }
 
+
 int Counter_func(int fd, struct Counter_t* cntrs)
 {
   int res_read_bytes = 0;
@@ -222,13 +208,7 @@ int Counter_func(int fd, struct Counter_t* cntrs)
   {
     char buffer[BUF_SIZE];
 
-    if ((res_read_bytes = read(fd, buffer, BUF_SIZE)) < 0)
-    {
-      perror("Read return negative value!\n");
-      return -1;
-    }
-
-    printf("res_of_read = %d\n", res_read_bytes);
+    res_read_bytes = read(fd, buffer, BUF_SIZE);
 
     cntrs->num_of_bytes += res_read_bytes;
     cntrs->num_of_word += Word_counter(buffer, res_read_bytes, &pos_in_word);//;
