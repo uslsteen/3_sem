@@ -26,7 +26,7 @@ struct Counter_t
 
 struct option longopts[] =
  {
-   {"wc", 0, NULL, 'w'},
+   {"w", 0, NULL, 'w'},
    {0, 0, 0, 0},
  };
 
