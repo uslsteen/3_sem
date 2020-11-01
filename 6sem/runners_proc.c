@@ -18,7 +18,6 @@ struct Message_t
 };
 
 
-//Judge and runners doesnt create queue
 
 void Judge(int id, int num_of_runnrs)
 {
