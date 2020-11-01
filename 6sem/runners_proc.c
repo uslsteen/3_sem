@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 {
   if (argc == 1)
   {
-    perror("Lack of arguments!\n");
+    perror("Lack of arguments!!!\n");
     return 0;
   }
 
