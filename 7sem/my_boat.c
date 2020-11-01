@@ -89,7 +89,5 @@ int main(int argc, char** argv)
     }
   }
 
-  //! Creating process with fork() for: captain, passengers
-
   return 0;
 }
