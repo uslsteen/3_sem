@@ -150,7 +150,7 @@ int main(int argc, char** argv)
 
   else if (judge_pid < 0)
   {
-    perror("fork return negative val to judge pid!\n");
+    perror("fork return negative val to judge pid!!\n");
     return ERROR;
   }
 
