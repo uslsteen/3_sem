@@ -48,5 +48,7 @@ This program work with help function:
 int execv(const char *path, char *const argv[]);
 ```
 
+## fifth seminar
 
+my_pipe - realisation implementation of a unidirectional channel, which is required for interprocess communication.
 
