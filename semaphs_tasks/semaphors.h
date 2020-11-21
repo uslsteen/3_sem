@@ -8,20 +8,19 @@
 #include <stdbool.h>
 
 
-const int num_of_semaphors = 8;
+const int num_of_semaphors = 5;
 const int ERROR = -1;
 
 
+Shared int Upwait = 0, Upgo = 0, Downgo = 0, Cap = 0;
 
 enum Semaphors
 {
-    STAIR_DOWN = 0,
-    START_OF_TRIP,
-    NUM_ON_BOAT,
-    NUM_ON_STAIR,
-    END_OF_TRIP,
-    NUM_ON_COAST,
-    LAST_TRIP
+  LOCK_UP = 0, //! Sem for going up herdsmans
+  LOCK_DOWN,   //! Sem for going down herdsmans
+  UP_QUEUE,    //! Sem for locking herdsman if queue after bottom enter in bom
+  UP,          //! Sem for locking bottom enter in bom
+  DOWN         //! Sem for locking top enter in bom
 };
 
 
@@ -53,6 +52,8 @@ void V_oper(int sem_id, enum Semaphors sem_num, short int num)
     }
 }
 
+
+/*
 void Z_oper(int sem_id, enum Semaphors sem_num)
 {
     struct sembuf sem_struct = {sem_num, 0, 0};
@@ -63,3 +64,4 @@ void Z_oper(int sem_id, enum Semaphors sem_num)
         exit(0);
     }
 }
+*/
