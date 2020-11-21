@@ -1,97 +1,103 @@
-
+#include "semaphors.h"
 
 void Herdsman(int sem_id, int index)
 {
-  printf("Hello, I'm herdsman number %.\nAnd I'm going to bom!\n");
+  printf("Hello, I'm herdsman number %.\nAnd I'm going to the top of mountain!\n");
+  Herdsman_down(sem_id, index)
 
-
+  printf("Hello, I'm herdsman number %.\nAnd I'm going to the top of mountain!\n");
+  Herdsman_up(sem_id, index)
 }
 
 //! Herdsman in the bottom !//
-void Herdsman_down(int sem_id)
+void Herdsman_down(int sem_id, int index)
 {
-  P(Lock_up);
+  P_oper(Lock_up);
   Upwait++;
   if (Upwait != 1)
   {
-    // не первый в очереди
-    V(Lock_up);
-    P(Up_queue);
+    //! Herdsman not first in queue
+    V_oper(Lock_up);
+    P_oper(Up_queue);
     (Lock_up);
   }
   if (!Cap)
   {
-    V(Lock_up);
+    V_oper(Lock_up);
+
     //! Оставляем стадо и идем вверх;
     //! Кладем шапку;
-    P(Lock_up);
+    P_oper(Lock_up);
     Cap = 1;
-    V(Lock_up);
-    P(Down);
+    V_oper(Lock_up);
+    P_oper(Down);
     //! Идем обратно;
     //! ждем возможности входа
-    P(Up);
-    P(Lock_up);
+    P_oper(Up);
+    P_oper(Lock_up);
   }
 
   // формирование колонны
   Upwait--;
   if (Upwait != 0)
   {
-    V(Up_queue);
+    V_oper(Up_queue);
     Upgo++;
-    V(Lock_up);
+    V_oper(Lock_up);
   }
 
-  { проход по бому; }
+  printf("I'm herdsman number %d and I'm going through the bom to the top!\n");
 
-  P(Lock_up);
+  P_oper(Lock_up);
   Upgo--;
 
   if (Upgo == 0)
   { // конец прохода колонны
     Cap = 0;
-    V(Down);
+    V_oper(Down);
   }
 
-  V(Lock_up);
+  V_oper(Lock_up);
 }
 
 
 //! Herdsman at the top !//
-void Herdsman_down()
+void Herdsman_down(int sem_id, int index)
 {
   // Проверяем, не лежит ли шапка
-  P(Down);
-  P(Lock_down);
+  P_oper(Down);
+  P_oper(Lock_down);
 
   // Первый в колонне блокирует вход снизу
 
   if (Downgo == 0)
   {
-    P(Up);
+    P_oper(Up);
     Downgo ++;
-    V(Lock_down);
-    V(Down);
+    V_oper(Lock_down);
+    V_oper(Down);
   }
 
-  { проход по бому; }
+  printf("I'm herdsman number %d and I'm going through the bom to the bottom!\n");
 
-  P(Lock_down);
+  P_oper(Lock_down);
   Downgo--;
 
   // Последний в колонне разблокирует вход снизу
 
   if (Downgo == 0)
   {
-    V(Up);
-    V(Lock_down);
+    V_oper(Up);
+    V_oper(Lock_down);
   }
 }
 
 void Sems_processing(int sem_id, int num_of_herdmans)
 {
     //! Semaphors initialization
+    //! Semaphore Lock_up = 1, Lock_down = 1;
+    //! Semaphore Up_queue = 0, Up = 1, Down = 1;
+
     V_oper(sem_id, LOCK_UP, 1);
     V_oper(sem_id, LOCK_DOWN, 1);
     V_oper(sem_id, UP_QUEUE);
@@ -101,10 +107,6 @@ void Sems_processing(int sem_id, int num_of_herdmans)
 
 int main()
 {
-
-  //! Semaphore Lock_up = 1, Lock_down = 1;
-  //! Semaphore Up_queue = 0, Up = 1, Down = 1;
-
   char print_buf[BUFSIZ];
   setvbuf(stdout, print_buf, _IOLBF, BUFSIZ);
   pid_t herdmans_pid = 0;
