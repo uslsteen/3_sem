@@ -1,4 +1,4 @@
-#include "semaphors.h"
+ #include "semaphors.h"
 
 void Herdsman(int sem_id, int index)
 {
@@ -12,52 +12,52 @@ void Herdsman(int sem_id, int index)
 //! Herdsman in the bottom !//
 void Herdsman_down(int sem_id, int index)
 {
-  P_oper(Lock_up);
+  P_oper(LOCK_UP);
   Upwait++;
+
   if (Upwait != 1)
   {
     //! Herdsman not first in queue
-    V_oper(Lock_up);
-    P_oper(Up_queue);
-    (Lock_up);
+    V_oper(LOCK_UP);
+    P_oper(UP_QUEUE);
+    P_oper(LOCK_UP);
   }
   if (!Cap)
   {
-    V_oper(Lock_up);
-
+    V_oper(LOCK_UP);
     //! Оставляем стадо и идем вверх;
     //! Кладем шапку;
-    P_oper(Lock_up);
+    P_oper(LOCK_UP);
     Cap = 1;
-    V_oper(Lock_up);
-    P_oper(Down);
+    V_oper(LOCK_UP);
+    P_oper(DOWN);
     //! Идем обратно;
     //! ждем возможности входа
-    P_oper(Up);
-    P_oper(Lock_up);
+    P_oper(UP);
+    P_oper(LOCK_UP);
   }
 
   // формирование колонны
   Upwait--;
   if (Upwait != 0)
   {
-    V_oper(Up_queue);
+    V_oper(UP_QUEUE);
     Upgo++;
-    V_oper(Lock_up);
+    V_oper(LOCK_UP);
   }
 
   printf("I'm herdsman number %d and I'm going through the bom to the top!\n");
 
-  P_oper(Lock_up);
+  P_oper(LOCK_UP);
   Upgo--;
 
   if (Upgo == 0)
   { // конец прохода колонны
     Cap = 0;
-    V_oper(Down);
+    V_oper(DOWN);
   }
 
-  V_oper(Lock_up);
+  V_oper(LOCK_UP);
 }
 
 
@@ -65,30 +65,30 @@ void Herdsman_down(int sem_id, int index)
 void Herdsman_down(int sem_id, int index)
 {
   // Проверяем, не лежит ли шапка
-  P_oper(Down);
-  P_oper(Lock_down);
+  P_oper(DOWN);
+  P_oper(LOCK_DOWN);
 
   // Первый в колонне блокирует вход снизу
 
   if (Downgo == 0)
   {
-    P_oper(Up);
+    P_oper(UP);
     Downgo ++;
-    V_oper(Lock_down);
-    V_oper(Down);
+    V_oper(LOCK_DOWN);
+    V_oper(DOWN);
   }
 
   printf("I'm herdsman number %d and I'm going through the bom to the bottom!\n");
 
-  P_oper(Lock_down);
+  P_oper(LOCK_DOWN);
   Downgo--;
 
   // Последний в колонне разблокирует вход снизу
 
   if (Downgo == 0)
   {
-    V_oper(Up);
-    V_oper(Lock_down);
+    V_oper(UP);
+    V_oper(LOCK_DOWN);
   }
 }
 
