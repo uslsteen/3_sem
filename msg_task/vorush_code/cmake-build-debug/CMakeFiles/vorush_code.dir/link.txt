@@ -1,0 +1,1 @@
+/usr/bin/gcc -g   CMakeFiles/vorush_code.dir/main.c.o  -o vorush_code 

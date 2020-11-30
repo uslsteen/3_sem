@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/anon/Code/3sem/msg_task/vorush_code/main.c
+sems.h
+/home/anon/Code/3sem/msg_task/vorush_code/sems.h
+
+/home/anon/Code/3sem/msg_task/vorush_code/sems.h
+stdio.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/ipc.h
+-
+sys/sem.h
+-
+sys/wait.h
+-
+errno.h
+-
+stdlib.h
+-
+stdbool.h
+-
+sys/msg.h
+-
+
