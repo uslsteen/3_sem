@@ -21,10 +21,9 @@
 
 const int ERROR = -1;
 
-#define RUNNR_CAME (num_of_runnrs + 2)
-#define RUN_IS_OVR (num_of_runnrs + 1)
 
-int Upwait = 0;  //! Variable for num of waiting herdsmans
+
+int Up_wait = 0;  //! Variable for num of waiting herdsmans
 int Up_go = 0;    //! Var for num of going up herdsmans
 int Down_go = 0;  //! Var for num of going down herdsmans
 int Cap = 0;         //! Flag for hat on the top enter
@@ -41,7 +40,7 @@ enum Semaphors
 
 struct Message_t
 {
-    long value;
+    long value; /* тип сообщения, должен быть > 0 */
 };
 
 
