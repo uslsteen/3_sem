@@ -1,3 +1,0 @@
-/home/anon/Code/3sem/msg_task/vorush_code/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/anon/Code/3sem/msg_task/vorush_code/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/anon/Code/3sem/msg_task/vorush_code/cmake-build-debug/CMakeFiles/vorush_code.dir

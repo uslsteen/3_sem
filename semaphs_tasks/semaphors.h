@@ -3,8 +3,6 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-#include <sys/wait.h>
-
 #include <errno.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -14,7 +12,7 @@ const int num_of_semaphors = 5;
 const int ERROR = -1;
 
 
-int Upwait = 0, Upgo = 0, Downgo = 0, Cap = 0;
+Shared int Upwait = 0, Upgo = 0, Downgo = 0, Cap = 0;
 
 enum Semaphors
 {
