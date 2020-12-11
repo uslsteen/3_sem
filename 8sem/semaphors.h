@@ -17,6 +17,14 @@
 
 const int num_of_semaphors = 0;
 
+const int SERVER_ID = 0;
+const char NAME_OF_SERVER[] = "servec.c"
+
+
+//! Vars for working with shared memory and semaphors
+int semaphs_id = 0;
+int shrd_mem_id = 0;
+
 enum Semaphors
 {
 };
