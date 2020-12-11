@@ -1,3 +1,6 @@
+#ifndef __SEMAPHORS_H__
+#define __SEMAPHORS_H__
+
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -15,22 +18,21 @@
 #include <fcntl.h>
 
 
-const int num_of_semaphors = 0;
+const int num_of_semaphors = 2;
 
 const int SERVER_ID = 0;
-const char NAME_OF_SERVER[] = "servec.c"
-
+const char NAME_OF_SERVER[] = "server.c";
+const int BUFFER_SIZE = 4096;
 
 //! Vars for working with shared memory and semaphors
-int semaphs_id = 0;
-int shrd_mem_id = 0;
-char* shrd_mem_buf = NULL;
+extern int sem_id;
 
 enum Semaphors
 {
   CHANNEL,
   MEMORY
 };
+
 
 int Err_proc(char* err_string)
 {
@@ -46,9 +48,9 @@ int Err_proc(char* err_string)
 
 void P_oper(int sem_id, enum Semaphors sem_name, short int num)
 {
-    struct sembuf sem_struct = {sem_name, (short int)-num, 0};
+    struct sembuf sem_struct[] = {{sem_name, (short int)-num, 0}};
 
-    if (semop(sem_id, &sem_struct, 1) < 0)
+    if (semop(sem_id, sem_struct, 1) < 0)
     {
         perror("sem op return not zero in P_oper!\n");
         exit(0);
@@ -66,8 +68,6 @@ void V_oper(int sem_id, enum Semaphors sem_name, short int num)
     }
 }
 
-
-/*
 void Z_oper(int sem_id, enum Semaphors sem_name)
 {
     struct sembuf sem_struct = {sem_name, 0, 0};
@@ -77,4 +77,5 @@ void Z_oper(int sem_id, enum Semaphors sem_name)
         exit(0);
     }
 }
-*/
+
+#endif // __SEMAPHORS_H__
