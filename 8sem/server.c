@@ -1,8 +1,5 @@
 #include "semaphors.h"
 
-int sem_id = 0;
-int shm_id = 0;
-char *buffer = 0;
 
 void Start_working()
 {
@@ -13,7 +10,7 @@ void Start_working()
     //! Server take control under the channer!
     P_oper(sem_id, MEMORY, 1);
 
-    printf("%s", buffer);
+    printf("%s", main_buffer);
 
     V_oper(sem_id, CHANNEL, 1);
     Z_oper(sem_id, CHANNEL);
@@ -29,9 +26,13 @@ int main()
   char buf[BUFFER_SIZE];
 
   key_t key = ftok(NAME_OF_SERVER, SERVER_ID);
+
   shm_id = shmget(key, BUFFER_SIZE, 0777 | IPC_CREAT);
+
   sem_id = semget(key, num_of_semaphors, 0777 | IPC_CREAT);
-  buffer = shmat(shm_id, NULL, 0);
+
+  main_buffer = shmat(shm_id, NULL, 0);
+
   setvbuf(stdout, buf, _IOLBF, BUFFER_SIZE);
 
   Start_working();

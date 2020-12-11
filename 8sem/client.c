@@ -1,8 +1,5 @@
 #include "semaphors.h"
 
-char* shrd_mem_buf_cl = NULL;
-int shrd_mem_id = 0;
-int sem_id = 0;
 
 //! Function for writing to shared memory
 //!
@@ -14,7 +11,7 @@ int My_write(FILE* in_file)
     P_oper(sem_id, CHANNEL, 1);
 
     //! Then client write to the channel
-    if ( (fgets(shrd_mem_buf_cl, BUFFER_SIZE, in_file)) == NULL)
+    if ( (fgets(main_buffer, BUFFER_SIZE, in_file)) == NULL)
     {
       //! Lock the channel for writing
       V_oper(sem_id, CHANNEL, 1);
@@ -41,10 +38,10 @@ int main(int argc, char** argv)
   //! Getting id for shared memory segment <--> key_t key
   key_t key = ftok(NAME_OF_SERVER, SERVER_ID);
 
-  if ((shrd_mem_id = shmget(key, BUFFER_SIZE, 0777)) < 0)
+  if ((shm_id = shmget(key, BUFFER_SIZE, 0777)) < 0)
     return Err_proc("client: shmget return neg value!\n");
 
-  if ((shrd_mem_buf_cl = (char*)shmat(shrd_mem_id, NULL, 0)) < 0)
+  if ((main_buffer = (char*)shmat(shm_id, NULL, 0)) == NULL)
     return Err_proc("client: shmat return neg value!\n");
 
   if ((sem_id = semget(key, num_of_semaphors, 0777)) < 0)
@@ -73,7 +70,7 @@ int main(int argc, char** argv)
       return Err_proc(argv[i]);
     }
 
-    if ((in_file = fdopen(fd, "rb")) < 0)
+    if ((in_file = fdopen(fd, "rb")) == NULL)
     {
       perror("client : fd return neg value to in_file!\n");
       return Err_proc(argv[i]);

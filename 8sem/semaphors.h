@@ -25,7 +25,10 @@ const char NAME_OF_SERVER[] = "server.c";
 const int BUFFER_SIZE = 4096;
 
 //! Vars for working with shared memory and semaphors
-extern int sem_id;
+int sem_id = 0;
+int shm_id = 0;
+char* main_buffer = NULL;
+
 
 enum Semaphors
 {
