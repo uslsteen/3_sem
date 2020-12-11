@@ -24,9 +24,12 @@ const char NAME_OF_SERVER[] = "servec.c"
 //! Vars for working with shared memory and semaphors
 int semaphs_id = 0;
 int shrd_mem_id = 0;
+char* shrd_mem_buf = NULL;
 
 enum Semaphors
 {
+  CHANNEL,
+  MEMORY
 };
 
 int Err_proc(char* err_string)
@@ -41,9 +44,9 @@ int Err_proc(char* err_string)
 //!                      z waiting for NULL
 
 
-void P_oper(int sem_id, enum Semaphors sem_num, short int num)
+void P_oper(int sem_id, enum Semaphors sem_name, short int num)
 {
-    struct sembuf sem_struct = {sem_num, (short int)-num, 0};
+    struct sembuf sem_struct = {sem_name, (short int)-num, 0};
 
     if (semop(sem_id, &sem_struct, 1) < 0)
     {
@@ -52,9 +55,9 @@ void P_oper(int sem_id, enum Semaphors sem_num, short int num)
     }
 }
 
-void V_oper(int sem_id, enum Semaphors sem_num, short int num)
+void V_oper(int sem_id, enum Semaphors sem_name, short int num)
 {
-    struct sembuf sem_struct = {sem_num, (short int)num, 0};
+    struct sembuf sem_struct = {sem_name, (short int)num, 0};
 
     if (semop(sem_id, &sem_struct, 1) < 0)
     {
@@ -65,9 +68,9 @@ void V_oper(int sem_id, enum Semaphors sem_num, short int num)
 
 
 /*
-void Z_oper(int sem_id, enum Semaphors sem_num)
+void Z_oper(int sem_id, enum Semaphors sem_name)
 {
-    struct sembuf sem_struct = {sem_num, 0, 0};
+    struct sembuf sem_struct = {sem_name, 0, 0};
     if (semop(sem_id, &sem_struct, 1) < 0)
     {
         perror("sem op return not zero in Z_oper!\n");

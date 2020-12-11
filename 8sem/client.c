@@ -1,11 +1,29 @@
 #include "semaphor.h"
 
 //! Function for writing to shared memory
+//! 
 int My_write(int fd)
 {
-  //! TO DO: realisation
-}
+  while (true)
+  {
+    //! Client take control under the channer!
+    P_oper(CHANNEL, 1)
 
+    //! Then client write to the channel
+    if (fgets(shrd_mem_buf, BUFFER_SIZE, in_file) == NULL)
+    {
+      //! Lock the channel for writing
+      V_oper(CHANNEL, 1);
+      break;
+    }
+
+    //! Client add to the semaphor MEMORY and then waiting for NULL
+    V_oper(MEMORY, 1);
+    Z_oper(MEMORY);
+  }
+
+  return 1;
+}
 
 
 //! Use for shared memory with help functions:
@@ -21,6 +39,9 @@ int main(int argc, char** argv)
   if ((shrd_mem_id = shmget(key, BUFFER_SIZE, 0777)) < 0)
     return Err_proc("client: shmget return neg value!\n");
 
+  if ((shrd_mem_buf = shmat(shrd_mem_id, NULL, 0)) < 0)
+    return Err_proc("client: shmat return neg value!\n");
+
   if ((semaphs_id = semget(key, num_of_semaphors, 0777)) < 0)
     return Err_proc("client: semget retur neg value!\n");
 
@@ -28,7 +49,12 @@ int main(int argc, char** argv)
 
   if ((argv[1][0] == '-') || (argc == 1))
   {
-    My_write(stdin);
+    if (!My_write(stdin))
+    {
+      perror("client : My_write return error!\n");
+      return errno;
+    }
+
 
     return 0;
   }
@@ -48,7 +74,7 @@ int main(int argc, char** argv)
       return Err_proc(argv[i]);
     }
 
-    if (My_write(in_file) == ERROR)
+    if (!My_write(in_file))
     {
       perror("client : My_write return error!\n");
       return Err_proc(argv[i]);
@@ -62,8 +88,5 @@ int main(int argc, char** argv)
 
   }
 
-
-
-
-
+  return 0;
 }
