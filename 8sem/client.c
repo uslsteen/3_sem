@@ -27,28 +27,8 @@ int My_write(FILE* in_file)
 }
 
 
-//! Use for shared memory with help functions:
-//! ftok(), shmget(), shmat(), semget(), open(), fdopen()
-
-int main(int argc, char** argv)
+int Start_working(int argc, char** argv, int fd, FILE* in_file)
 {
-  int fd = 0;
-  FILE* in_file = NULL;
-
-  //! Getting id for shared memory segment <--> key_t key
-  key_t key = ftok(NAME_OF_SERVER, SERVER_ID);
-
-  if ((shm_id = shmget(key, BUFFER_SIZE, 0777)) < 0)
-    return Err_proc("client: shmget return neg value!\n");
-
-  if ((main_buffer = (char*)shmat(shm_id, NULL, 0)) == NULL)
-    return Err_proc("client: shmat return neg value!\n");
-
-  if ((sem_id = semget(key, num_of_semaphors, 0777)) < 0)
-    return Err_proc("client: semget retur neg value!\n");
-
-  //! Processing num of arguments
-
   if (argc == 1 || argv[1][0] == '-')
   {
     if (!My_write(stdin))
@@ -87,8 +67,36 @@ int main(int argc, char** argv)
       perror("client : fclose return neg value!\n");
       return Err_proc(argv[i]);
     }
-
   }
+
+  return 0;
+}
+
+
+//! Use for shared memory with help functions:
+//! ftok(), shmget(), shmat(), semget(), open(), fdopen()
+
+int main(int argc, char** argv)
+{
+  int fd = 0;
+  FILE* in_file = NULL;
+
+  //! Getting id for shared memory segment <--> key_t key
+  key_t key = ftok(NAME_OF_SERVER, SERVER_ID);
+
+  if ((shm_id = shmget(key, BUFFER_SIZE, 0777)) < 0)
+    return Err_proc("client: shmget return neg value!\n");
+
+  if ((main_buffer = (char*)shmat(shm_id, NULL, 0)) == NULL)
+    return Err_proc("client: shmat return neg value!\n");
+
+  if ((sem_id = semget(key, num_of_semaphors, 0777)) < 0)
+    return Err_proc("client: semget retur neg value!\n");
+
+  //! Processing num of arguments
+
+  Start_working(argc, argv, fd, in_file);
+
 
   return 0;
 }
