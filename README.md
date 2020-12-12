@@ -74,3 +74,8 @@ ssize_t msgrcv(int msqid, struct msgbuf *msgp, size_t msgsz, long msgtyp, int ms
 ```bash
 int msgget(key_t key, int msgflg); 
 ```
+
+
+## seventh seminar
+
+```my_boat.c``` - programm - realisation of trip on the boat. 
