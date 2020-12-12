@@ -12,27 +12,31 @@
 #include <stdbool.h>
 #include <assert.h>
 
+#include <stdlib.h>
 
+#include <sys/wait.h>
+
+
+//! Function for processing errors
 int Err_proc(char* err_string)
 {
   perror(err_string);
   return errno;
 }
 
+//! Function for output time in stdout
 void Print_real_time(struct timespec start_clock, struct timespec final_clock)
 {
   double secs = final_clock.tv_sec - start_clock.tv_sec;
   double nsecs = final_clock.tv_nsec - start_clock.tv_nsec;
 
-  double time = secs*1000 + nsecs/1000000;
+  double time = (secs*1000 + nsecs/1000000)/1000;
 
-  printf("Process time in msecs : %lf\n", time);
+  printf("real  %lf.2\n", time);
 }
 
 
-
-
-
+//! Function for getting time like utilite
 void My_time(int argc, char** argv)
 {
   struct timespec start_clock = {0, 0}, final_clock = {0, 0};
@@ -51,7 +55,7 @@ void My_time(int argc, char** argv)
     execvp(argv[1], argv + 1);
 
     perror("Error with child!\n");
-    return errno;
+    exit(0);
   }
 
   if (wait(&status) < 0)
@@ -64,18 +68,22 @@ void My_time(int argc, char** argv)
 
   Print_real_time(start_clock, final_clock);
 
+  double user_time = (another_time.tms_utime + another_time.tms_cutime); /// num_of_ticks;
+  double sys_time  = (another_time.tms_stime + another_time.tms_cstime); /// num_of_ticks;
 
+  printf("user %lf\n", user_time);
+  printf("sys %lf\n", sys_time);
 }
 
 
 int main(int argc, char** argv)
 {
-  if (argc < 2)
+  if (argc == 1)
   {
     perror("Lack arguments!\n");
     exit(0);
   }
-  else
+  else if (argc > 1)
   {
     My_time(argc, argv);
     return 0;
