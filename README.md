@@ -61,4 +61,16 @@ There is ```num_of_runners``` , who are created with help syscall ```fork()```.
 The judge gives commands to the runners.
 
 Runners, in the order of their arrival at the start, perform a sequence of actions: start, end the race.
+In this programm I uses syscalls:
 
+```bash
+int msgsnd(int msqid, struct msgbuf *msgp, size_t msgsz, int msgflg);
+```
+
+```bash
+ssize_t msgrcv(int msqid, struct msgbuf *msgp, size_t msgsz, long msgtyp, int msgflg);
+```
+
+```bash
+int msgget(key_t key, int msgflg); 
+```
