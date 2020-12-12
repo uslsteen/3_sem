@@ -52,3 +52,13 @@ int execv(const char *path, char *const argv[]);
 
 ```my_pipe.c``` - realisation implementation of a unidirectional channel, which is required for interprocess communication.
 
+## sixth seminar
+
+```runners_proc.c``` - program of simulating runners competition. 
+
+There is ```num_of_runners``` , who are created with help syscall ```fork()```.
+
+The judge gives commands to the runners.
+
+Runners, in the order of their arrival at the start, perform a sequence of actions: start, end the race.
+
