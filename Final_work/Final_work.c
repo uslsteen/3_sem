@@ -19,7 +19,7 @@ int Err_proc(char* err_string)
   return errno;
 }
 
-void Print_time(struct timespec start_clock, struct timespec final_clock)
+void Print_real_time(struct timespec start_clock, struct timespec final_clock)
 {
   double secs = final_clock.tv_sec - start_clock.tv_sec;
   double nsecs = final_clock.tv_nsec - start_clock.tv_nsec;
@@ -29,21 +29,42 @@ void Print_time(struct timespec start_clock, struct timespec final_clock)
   printf("Process time in msecs : %lf\n", time);
 }
 
+
+
+
+
 void My_time(int argc, char** argv)
 {
   struct timespec start_clock = {0, 0}, final_clock = {0, 0};
+  int status = 0;
+  struct tms another_time;
+  long long int num_of_ticks = sysconf(_SC_CLK_TCK);
 
   if (clock_gettime(CLOCK_REALTIME, &start_clock) != 0)
     Err_proc("Error in clock_gettime, start clock!\n");
 
   pid_t pid = fork();
 
+  //! if i am child then execut
   if (pid == 0)
   {
+    execvp(argv[1], argv + 1);
 
+    perror("Error with child!\n");
+    return errno;
   }
 
-  
+  if (wait(&status) < 0)
+    Err_proc("Wait return < 0!\n");
+
+  if (clock_gettime(CLOCK_REALTIME, &final_clock) != 0)
+    Err_proc("Error in clock_gettime, start clock!\n");
+
+  int check = times(&another_time);
+
+  Print_real_time(start_clock, final_clock);
+
+
 }
 
 
