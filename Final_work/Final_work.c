@@ -32,7 +32,7 @@ void Print_real_time(struct timespec start_clock, struct timespec final_clock)
 
   double time = (secs*1000 + nsecs/1000000)/1000;
 
-  printf("real  %lf.2\n", time);
+  printf("real  %.2lf\n", time);
 }
 
 
@@ -66,13 +66,16 @@ void My_time(int argc, char** argv)
 
   int check = times(&another_time);
 
+  if (check == -1)
+    Err_proc("Times return negative value to check!\n");
+
   Print_real_time(start_clock, final_clock);
 
-  double user_time = (another_time.tms_utime + another_time.tms_cutime); /// num_of_ticks;
-  double sys_time  = (another_time.tms_stime + another_time.tms_cstime); /// num_of_ticks;
+  double user_time = (another_time.tms_utime + another_time.tms_cutime);
+  double sys_time  = (another_time.tms_stime + another_time.tms_cstime);
 
-  printf("user %lf\n", user_time);
-  printf("sys %lf\n", sys_time);
+  printf("user %.2lf\n", user_time);
+  printf("sys %.2lf\n", sys_time);
 }
 
 
