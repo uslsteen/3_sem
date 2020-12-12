@@ -2,9 +2,9 @@
 Task from working in 3sem.
 
 ## first seminar
-my_echo.c - its clone of linux cmd echo.
+```my_echo.c``` - its clone of linux cmd echo.
 
-hello.c - standart first program on C with help func:
+```hello.c``` - standart first program on C with help func:
 
 ```bash
 ssize_t write(int fildes, const void *buf, size_t nbytes)
@@ -12,7 +12,7 @@ ssize_t write(int fildes, const void *buf, size_t nbytes)
 
 
 ## second seminar
-my_id.c - my realisation linux cmd id
+```my_id.c``` - my realisation linux cmd id
 
 ## third seminar
 
