@@ -30,6 +30,9 @@ int shm_id = 0;
 int num_of_waiting_cars = 0;
 int num_o_waiting_ships = 0;
 
+//! if bridge_cond  == 1 <=> bridge close
+//! if bridge_cond  == 1 <=> bridge open
+bool bridge_cond = 1;
 
 
 //char* main_buffer = NULL;
@@ -39,7 +42,8 @@ enum Semaphors
 {
   SHIP,
   CAR,
-  BRIDGE
+  BRIDGE,
+  SHRD_VAR
 };
 
 

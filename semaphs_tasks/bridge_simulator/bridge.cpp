@@ -5,7 +5,35 @@ void Car_method(int sem_id, int index)
 {
   printf("Hello, I'm driver number %d", index);
 
+  //! Driver[index] went to the begin of the bridge
+  P_oper(sem_id, SHRD_VAR, 1);
 
+  num_of_waiting_cars++;
+  printf("At the moment driver number %d stay in queue!\n", index);
+
+  V_oper(sem_id, SHRD_VAR, 1);
+
+  printf("I'm gonna drive through the bridge!\n");
+
+  P_oper(sem_id, CAR, 1);
+  P_oper(sem_id, BRIDGE, 1);
+
+  printf("And now driver nuber %d on the bridge!\n");
+
+
+  P_oper(sem_id, SHRD_VAR, 1);
+
+  num_of_waiting_cars--;
+  printf("Driver number %d  drove the bridge!\n", index);
+
+  V_oper(sem_id, SHRD_VAR, 1);
+
+  P_oper(sem_id, SHRD_VAR, 1);
+
+  if ((num_o_waiting_ships != 0 && num_of_waiting_cars == 0) ||(num_o_waiting_ships > 2))
+  {
+    
+  }
 
 }
 
@@ -15,6 +43,14 @@ void Ship_method(int sem_id, int index)
   printf("Hello, I'm captain of the ship number %d", index);
 
 
+}
+
+void Semaphs_init(int sem_id)
+{
+  V_oper(sem_id, SHRD_VAR, 1);
+  V_oper(sem_id, CAR, 1);
+  V_oper(sem_id, BRIDGE, 1);
+  V_oper(sem_id, SHIP, 1);
 }
 
 int main(int argc, char** argv)
@@ -39,7 +75,9 @@ int main(int argc, char** argv)
   if ((shm_id = shmget(IPC_PRIVATE, BUFSIZ, MAX_PERMISSION | IPC_PRIVATE)) < 0)
     return Err_proc("shmget return negative value!\n");
 
-  for (int i = 0; i < num_of_cars + num_of_ships; ++i)
+  Semaphs_init(sem_id);
+
+  for (int index = 0; index < num_of_cars + num_of_ships; ++i)
   {
 
     if ((ship_pid = fork()) < 0)
@@ -49,9 +87,9 @@ int main(int argc, char** argv)
       return Err_proc("fork return neg value to ship pid!\n");
 
     if (i < num_of_cars)
-      Car_method();
+      Car_method(index, sem_id);
 
-    else Ship_method();
+    else Ship_method(num_of_cars - index, sem_id);
 
     return 0;
   }
