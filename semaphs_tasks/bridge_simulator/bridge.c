@@ -3,28 +3,28 @@
 
 void Car_method(int sem_id, int index)
 {
-  printf("Hello, I'm driver number %d", index);
+  printf("Hello, I'm driver[%d]", index);
 
   //! Driver[index] went to the begin of the bridge
   P_oper(sem_id, SHRD_VAR, 1);
 
   num_of_waiting_cars++;
-  printf("At the moment driver number %d stay in queue!\n", index);
+  printf("At the moment driver[%d] stay in queue!\n", index);
 
   V_oper(sem_id, SHRD_VAR, 1);
 
-  printf("I'm gonna drive through the bridge!\n");
+  printf("Driver[%d] gonna drive through the bridge!\n");
 
   P_oper(sem_id, CAR, 1);
   P_oper(sem_id, BRIDGE, 1);
 
-  printf("And now driver nuber %d on the bridge!\n");
+  printf("And now driver [%d] on the bridge!\n", index);
 
 
   P_oper(sem_id, SHRD_VAR, 1);
 
   num_of_waiting_cars--;
-  printf("Driver number %d  drove the bridge!\n", index);
+  printf("Driver[%d] drove the bridge!\n", index);
 
   V_oper(sem_id, SHRD_VAR, 1);
 
@@ -67,38 +67,38 @@ void Car_method(int sem_id, int index)
 
 void Ship_method(int sem_id, int index)
 {
-  printf("Hello, I'm captain of the ship number %d", index);
+  printf("Hello, I'm captain of the ship[%d]", index);
 
   //! Driver[index] went to the begin of the bridge
   P_oper(sem_id, SHRD_VAR, 1);
 
   num_of_waiting_ships++;
-  printf("At the moment captain of the ship number[%d] stay in queue!\n", index);
+  printf("At the moment captain of the ship[%d] stay in queue!\n", index);
 
   V_oper(sem_id, SHRD_VAR, 1);
 
-  printf("Captain[%d] gonna swim under the bridge!\n", index);
+  printf("Captain of the ship[%d] gonna swim under the bridge!\n", index);
 
   //! Ship start moving
   V_oper(sem_id, SHIP, 1);
   P_oper(sem_id, BRIDGE, 1);
 
-  printf("And now captain[%d] under the bridge!\n");
+  printf("And now captain of the ship[%d] under the bridge!\n");
 
   P_oper(sem_id, SHRD_VAR, 1);
 
   num_of_waiting_ships--;
-  printf("Driver number %d  drove the bridge!\n", index);
+  printf("Captain of the ship[%d] swome under the bridge!\n", index);
+
   V_oper(sem_id, SHRD_VAR, 1);
 
-  //!
   P_oper(sem_id, SHRD_VAR, 1);
 
   //! There is checking for possibility moving of cars or ships
   if (num_o_waiting_ships > 2 || (num_of_waiting_cars == 0 && num_of_waiting_ships != 0))
   {
     //! Ship should move
-    V_oper(sem_id, BOAT, 1);
+    V_oper(sem_id, SHIP, 1);
 
     if (bridge_cond)
     {
