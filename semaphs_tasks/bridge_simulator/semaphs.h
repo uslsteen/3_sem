@@ -26,12 +26,20 @@ const int BUFFER_SIZE     = 4096;
 //! Vars for working with shared memory and semaphors
 int sem_id = 0;
 int shm_id = 0;
+
+int num_of_waiting_cars = 0;
+int num_o_waiting_ships = 0;
+
+
+
 //char* main_buffer = NULL;
 
 
 enum Semaphors
 {
-
+  SHIP,
+  CAR,
+  BRIDGE
 };
 
 
