@@ -27,15 +27,14 @@ const int BUFFER_SIZE     = 4096;
 int sem_id = 0;
 int shm_id = 0;
 
+//! Just nums of waiting ships and cars
 int num_of_waiting_cars = 0;
-int num_o_waiting_ships = 0;
+int num_of_waiting_ships = 0;
 
 //! if bridge_cond  == 1 <=> bridge close
-//! if bridge_cond  == 1 <=> bridge open
+//! if bridge_cond  == 0 <=> bridge open
+//! Default condition - bridge is closed
 bool bridge_cond = 1;
-
-
-//char* main_buffer = NULL;
 
 
 enum Semaphors
