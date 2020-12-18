@@ -34,7 +34,7 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
     printf("Driver[%d] drove over the bridge!\n\n", index);
     sleep(DELAY);
 
-
+    //! Checking for possibility movind of ships and cars
     if (shm_struct->num_of_waiting_ships > MAX_NUM_OF_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
     {
         //! Checking for condition of the bride: close or open?
@@ -48,6 +48,7 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
             sleep(DELAY);
         }
 
+        // Give permission for captain of the ship for moving
         V_oper(sem_id, SHIP, 1);
     }
     else
@@ -63,6 +64,7 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
             sleep(DELAY);
         }
 
+        //! Give permission for other drivers for moving
         V_oper(sem_id, CAR, 1);
     }
 
@@ -102,7 +104,7 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
     printf("Captain of the ship[%d] swome under the bridge!\n\n", index);
     sleep(DELAY);
 
-
+    //! Checking for possibility movind of ships and cars
     if (shm_struct->num_of_waiting_ships > MAX_NUM_OF_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
     {
         if ((shm_struct->bridge_cond) == CLOSE)
@@ -115,6 +117,7 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
             sleep(DELAY);
         }
 
+        //! Give permission for other captains of the ship for moving
         V_oper(sem_id, SHIP, 1);
     }
     else
@@ -129,6 +132,7 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
             sleep(DELAY);
         }
 
+        //! Give permission for other drivers for moving
         V_oper(sem_id, CAR, 1);
     }
 
@@ -146,6 +150,7 @@ void Init(struct Bridge_orgnz* shm_struct, int sem_id)
     shm_struct->num_of_waiting_cars = 0;
     shm_struct->num_of_waiting_ships = 0;
     shm_struct->bridge_cond = CLOSE;
+
 
     V_oper(sem_id, SHRD_VAR, 1);
     V_oper(sem_id, BRIDGE, 1);
@@ -198,7 +203,7 @@ int main(int argc, char** argv)
 
         if (pid == 0)
         {
-            if (index % 2)
+            if (index % 2 == 0)
                 Car_method(sem_id, (index / 2) + 1, shm_struct);
 
             else Ship_method(sem_id, (index + 1)/2 + 1, shm_struct);
