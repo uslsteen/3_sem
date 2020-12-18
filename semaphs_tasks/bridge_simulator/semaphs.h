@@ -1,5 +1,10 @@
-#ifndef __SEMAPHS_H__
-#define __SEMAPHS_H__
+//
+// Created by anon on 18.12.2020.
+//
+
+#ifndef BRIDGE_SEMS_H
+#define BRIDGE_SEMS_H
+
 
 #include <stdio.h>
 #include <unistd.h>
@@ -24,37 +29,39 @@ const int num_of_semaphors = 4;
 
 const int MAX_PERMISSION  = 0777;
 const int BUFFER_SIZE     = 4096;
+const int OPEN = 1;
+const int CLOSE = 0;
 
 
 struct Bridge_organization
 {
-  //! Vars for working with shared memory and semaphors
+    //! Vars for working with shared memory and semaphors
 
-  int num_of_waiting_cars;
-  int num_of_waiting_ships;
+    int num_of_waiting_cars;
+    int num_of_waiting_ships;
 
-  //! Just nums of waiting ships and cars
+    //! Just nums of waiting ships and cars
 
-  //! if bridge_cond  == 0 <=> bridge close
-  //! if bridge_cond  == 1 <=> bridge open
-  //! Default condition - bridge is closed
-  int bridge_cond;
+    //! if bridge_cond  == 0 <=> bridge close
+    //! if bridge_cond  == 1 <=> bridge open
+    //! Default condition - bridge is closed
+    int bridge_cond;
 };
 
 
 enum Semaphors
 {
-  SHIP,
-  CAR,
-  BRIDGE,
-  SHRD_VAR
+    SHIP,
+    CAR,
+    BRIDGE,
+    SHRD_VAR
 };
 
 
 int Err_proc(char* err_string)
 {
-  perror(err_string);
-  return errno;
+    perror(err_string);
+    return errno;
 }
 
 
@@ -95,4 +102,6 @@ void Z_oper(int sem_id, enum Semaphors sem_name)
     }
 }
 
-#endif // __SEMAPHS_H__
+
+
+#endif //BRIDGE_SEMS_H
