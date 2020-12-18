@@ -18,7 +18,7 @@
 #include <sys/shm.h>
 
 
-//Shared structure
+//! Shared structure
 struct Bridge_orgnz
 {
     unsigned num_of_waiting_cars;
@@ -33,12 +33,12 @@ const int MAX_PERMISSION  = 0777;
 const int BUFFER_SIZE     = 4096;
 const int SHM_SIZE = 4096;
 
-const unsigned int MAX_SHIPS = 3;
+const unsigned int MAX_NUM_OF_SHIPS = 2;
 
 const int OPEN = 1;
 const int CLOSE = 0;
 
-const int DELAY = 1;
+const int DELAY = 0;
 
 
 enum Semaphors

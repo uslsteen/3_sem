@@ -1,4 +1,4 @@
-#include "sems.h"
+#include "semaphs.h"
 
 //! Function of simulating car existing
 //! \param sem_id
@@ -34,7 +34,7 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
     printf("Driver[%d] drove over the bridge!\n\n", index);
     sleep(DELAY);
 
-    if (shm_struct->num_of_waiting_ships > MAX_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
+    if (shm_struct->num_of_waiting_ships > MAX_NUM_OF_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
     {
         V_oper(sem_id, SHIP, 1);
 
@@ -100,7 +100,7 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
     printf("Captain of the ship[%d] swome under the bridge!\n\n", index);
     sleep(DELAY);
 
-    if (shm_struct->num_of_waiting_ships > MAX_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
+    if (shm_struct->num_of_waiting_ships > MAX_NUM_OF_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
     {
         V_oper(sem_id, SHIP, 1);
 
@@ -198,16 +198,16 @@ int main(int argc, char** argv)
 
         if (!pid)
         {
-            if (index < num_of_cars)
-                Car_method(sem_id, index + 1, shm_struct);
+            if (index % 2)
+                Car_method(sem_id, index / 2 + 1, shm_struct);
 
-            else Ship_method(sem_id, index - num_of_cars + 1, shm_struct);
+            else Ship_method(sem_id, (index + 1)/2 + 1, shm_struct);
 
             return 0;
         }
     }
 
-    for (int index = 1; index < num_of_cars + num_of_ships; index++)
+    for (int index = 0  ; index < num_of_cars + num_of_ships; index++)
         wait(&status);
 
     //! Remove shared memory and semaphors
