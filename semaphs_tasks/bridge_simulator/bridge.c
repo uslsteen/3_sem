@@ -7,8 +7,6 @@
 //! void function - no return
 void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
 {
-    //! Driver[index] moved to begin of cars queue
-
     //! Driver[index] take sem SHRD_VAR for working with shm_struct
     P_oper(sem_id, SHRD_VAR, 1);
 
@@ -19,25 +17,26 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
     V_oper(sem_id, SHRD_VAR, 1);
     //! Driver[index] end working with shm_struct
 
-    P_oper(sem_id, CAR, 1);
+
 
     //! Driver[index] take sem for riding over the bridge
+    P_oper(sem_id, CAR, 1);
     P_oper(sem_id, BRIDGE, 1);
 
     printf("Driver[%d] gonna drive over the bridge!\n\n", index);
     sleep(DELAY);
 
-    //!
+
+    //! Driver[index] take sem SHRD_VAR for working with shm_struct
     P_oper(sem_id, SHRD_VAR, 1);
 
     (shm_struct->num_of_waiting_cars)--;
     printf("Driver[%d] drove over the bridge!\n\n", index);
     sleep(DELAY);
 
+
     if (shm_struct->num_of_waiting_ships > MAX_NUM_OF_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
     {
-        V_oper(sem_id, SHIP, 1);
-
         //! Checking for condition of the bride: close or open?
         if (shm_struct->bridge_cond == CLOSE) //
         {
@@ -48,11 +47,11 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
             printf("Success, employees raised the bridge!\n\n");
             sleep(DELAY);
         }
+
+        V_oper(sem_id, SHIP, 1);
     }
     else
     {
-        V_oper(sem_id, CAR, 1);
-
         //! Checking for condition of the bride: close or open?
         if (shm_struct->bridge_cond == OPEN)
         {
@@ -63,14 +62,13 @@ void Car_method(int sem_id, int index,  struct Bridge_orgnz* shm_struct)
             printf("Success, employees lowed the bridge!\n\n");
             sleep(DELAY);
         }
+
+        V_oper(sem_id, CAR, 1);
     }
 
-
+    //! Driver[index] ended working with shm struct and leave the bridge
     V_oper(sem_id, SHRD_VAR, 1);
     V_oper(sem_id, BRIDGE, 1);
-    //! Driver[index] ended working with shm struct and leave the bridge
-
-    return;
 }
 
 //! Function of simulating ship existing
@@ -88,22 +86,25 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
     V_oper(sem_id, SHRD_VAR, 1);
 
 
+
     P_oper(sem_id, SHIP, 1);
     P_oper(sem_id, BRIDGE, 1);
 
     printf("Captain of the ship[%d] gonna swim under the bridge!\n\n", index);
     sleep(DELAY);
 
+
+
+    //! Taking sems SHRD_VAR for working with shared data
     P_oper(sem_id, SHRD_VAR, 1);
 
     (shm_struct->num_of_waiting_ships)--;
     printf("Captain of the ship[%d] swome under the bridge!\n\n", index);
     sleep(DELAY);
 
+
     if (shm_struct->num_of_waiting_ships > MAX_NUM_OF_SHIPS || ((shm_struct->num_of_waiting_cars == 0) && (shm_struct->num_of_waiting_ships != 0)))
     {
-        V_oper(sem_id, SHIP, 1);
-
         if ((shm_struct->bridge_cond) == CLOSE)
         {
             printf("The employees of the transport system in a hurry raise the bridge!\n\n");
@@ -114,11 +115,10 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
             sleep(DELAY);
         }
 
+        V_oper(sem_id, SHIP, 1);
     }
     else
     {
-        V_oper(sem_id, CAR, 1);
-
         if (shm_struct->bridge_cond == OPEN)
         {
             printf("Employees of the transport system in a hurry lower the bridge.\n");
@@ -129,13 +129,13 @@ void Ship_method(int sem_id, int index, struct Bridge_orgnz* shm_struct)
             sleep(DELAY);
         }
 
+        V_oper(sem_id, CAR, 1);
     }
 
+
+    //! Captain of the ship[index] ended working with shm struct and leave place with bridge
     V_oper(sem_id, SHRD_VAR, 1);
     V_oper(sem_id, BRIDGE, 1);
-    //! Captain of the ship[index] ended working with shm struct and leave place with bridge
-
-    return;
 }
 
 //! Function of initialization semaphors and shm struct
