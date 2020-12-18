@@ -19,7 +19,7 @@
 
 
 //Shared structure
-struct Bridge_organization
+struct Bridge_orgnz
 {
     unsigned num_of_waiting_cars;
     unsigned num_of_waiting_ships;
@@ -27,7 +27,7 @@ struct Bridge_organization
 };
 
 
-const int num_of_semaphors = 4;
+const int NUM_OF_SEMAPHORS = 4;
 
 const int MAX_PERMISSION  = 0777;
 const int BUFFER_SIZE     = 4096;
@@ -37,6 +37,8 @@ const unsigned int MAX_SHIPS = 3;
 
 const int OPEN = 1;
 const int CLOSE = 0;
+
+const int DELAY = 1;
 
 
 enum Semaphors
