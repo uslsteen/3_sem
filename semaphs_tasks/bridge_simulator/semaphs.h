@@ -1,5 +1,5 @@
-#ifndef __SEMAPHORS_H__
-#define __SEMAPHORS_H__
+#ifndef __SEMAPHS_H__
+#define __SEMAPHS_H__
 
 #include <stdio.h>
 #include <unistd.h>
@@ -15,6 +15,8 @@
 #include <sys/wait.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+
+
 #include <fcntl.h>
 
 
@@ -23,18 +25,21 @@ const int num_of_semaphors = 4;
 const int MAX_PERMISSION  = 0777;
 const int BUFFER_SIZE     = 4096;
 
-//! Vars for working with shared memory and semaphors
-int sem_id = 0;
-int shm_id = 0;
 
-//! Just nums of waiting ships and cars
-int num_of_waiting_cars = 0;
-int num_of_waiting_ships = 0;
+struct Bridge_organization
+{
+  //! Vars for working with shared memory and semaphors
 
-//! if bridge_cond  == 1 <=> bridge close
-//! if bridge_cond  == 0 <=> bridge open
-//! Default condition - bridge is closed
-bool bridge_cond = 1;
+  int num_of_waiting_cars;
+  int num_of_waiting_ships;
+
+  //! Just nums of waiting ships and cars
+
+  //! if bridge_cond  == 0 <=> bridge close
+  //! if bridge_cond  == 1 <=> bridge open
+  //! Default condition - bridge is closed
+  int bridge_cond;
+};
 
 
 enum Semaphors
@@ -90,4 +95,4 @@ void Z_oper(int sem_id, enum Semaphors sem_name)
     }
 }
 
-#endif // __SEMAPHORS_H__
+#endif // __SEMAPHS_H__
