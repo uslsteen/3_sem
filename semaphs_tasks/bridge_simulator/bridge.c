@@ -196,10 +196,10 @@ int main(int argc, char** argv)
         if ((pid = fork()) < 0)
             return Err_proc("fork return neg value to pid!\n");
 
-        if (!pid)
+        if (pid == 0)
         {
             if (index % 2)
-                Car_method(sem_id, index / 2 + 1, shm_struct);
+                Car_method(sem_id, (index / 2) + 1, shm_struct);
 
             else Ship_method(sem_id, (index + 1)/2 + 1, shm_struct);
 
