@@ -122,4 +122,9 @@ void *shmat(int shmid, const void *shmaddr, int shmflg);
 
 And also treee atomic operations written by myself (see in ```semaphors.h```).
 
+## Program from contorl work (bridge_simulation)
+
+```bridge_simulation.c``` - its a program-simalution of collision resolution between car and ship on the bridge.
+
+In this program I used all my knoledge about semaphors and shared memory from last seminars.
 
