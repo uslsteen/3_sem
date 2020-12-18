@@ -61,7 +61,7 @@ There is ```num_of_runners``` , who are created with help syscall ```fork()```.
 The judge gives commands to the runners.
 
 Runners, in the order of their arrival at the start, perform a sequence of actions: start, end the race.
-In this programm I uses syscalls:
+In this programm I used new syscalls:
 
 ```bash
 int msgsnd(int msqid, struct msgbuf *msgp, size_t msgsz, int msgflg);
@@ -79,3 +79,51 @@ int msgget(key_t key, int msgflg);
 ## seventh seminar
 
 ```my_boat.c``` - programm - realisation of trip on the boat. 
+
+Captain gives commans to the passenger about arrival and departure, about condition of the stair. 
+
+Passengers make step to stair (take sem STAIR), then step to boat (put STAIR, take sem BOAT) and etc.
+
+[in] parametrs - num_of_passengers, capacity of boat, capacity of stair, num of trips.
+
+In this program I used new syscalls:
+
+```bash
+int semget(key_t key, int nsems, int semflg);  
+```
+
+```bash
+ssize_t msgrcv(int msqid, struct msgbuf *msgp, size_t msgsz, long msgtyp, int msgflg);
+```
+
+And also treee atomic operations written by myself (see in ```semaphors.h```).
+
+
+
+## eighth seminar
+
+```my_client.c``` and ```my_server.c``` - program - simulation of working real server with calls from client.
+
+You should run ```client.c``` in one terminal, ```server.c``` in another termianl and see amazing relationship between it.
+
+It this program I knew about shared memory concept and used this new syscalls:
+
+```bash
+key_t ftok(const char *pathname, int proj_id);  
+```
+
+```bash
+int shmget(key_t key, int size, int shmflg);
+```
+
+```bash
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+```
+
+And also treee atomic operations written by myself (see in ```semaphors.h```).
+
+## Program from control work (bridge_simulation)
+
+```bridge_simulation.c``` - its a program-simalution of collision resolution between car and ship on the bridge.
+
+In this program I used all my knoledge about semaphors and shared memory from last seminars.
