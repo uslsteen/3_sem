@@ -1,7 +1,12 @@
-# 3sem
-Task from working in 3sem.
+# Third semestr
 
-## first seminar
+## System programming course in MIPT.
+
+![GitHub repo size](https://img.shields.io/github/repo-size/uslsteen/3sem?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/uslsteen/3sem?color=red&style=for-the-badge)
+![GitHub lines](https://img.shields.io/tokei/lines/github/uslsteen/3sem?style=for-the-badge)
+
+## <ins>First seminar</ins>
 ```my_echo.c``` - its clone of linux cmd echo.
 
 ```hello.c``` - standart first program on C with help func:
@@ -11,10 +16,10 @@ ssize_t write(int fildes, const void *buf, size_t nbytes)
 ```
 
 
-## second seminar
+## <ins>Second seminar</ins>
 ```my_id.c``` - my realisation linux cmd id
 
-## third seminar
+## <ins>Third seminar</ins>
 
 ```my_cat.c``` - my realisation linux cmd cat with help funcs:
 
@@ -32,7 +37,7 @@ ssize_t read(int fd, void *buf, size_t count);
 ```
 ```my_cp.c``` - it should be realistion linux cmd cp with help same funcs.
 
-## fourth seminar
+## <ins>Fourth seminar</ins>
 
 ```my_fork.c``` - creating process with help function:
 
@@ -48,11 +53,11 @@ This program work with help function:
 int execv(const char *path, char *const argv[]);
 ```
 
-## fifth seminar
+## <ins>Fifth seminar</ins>
 
 ```my_pipe.c``` - realisation implementation of a unidirectional channel, which is required for interprocess communication.
 
-## sixth seminar
+## <ins>Sixth seminar</ins>
 
 ```runners_proc.c``` - program of simulating runners competition. 
 
@@ -76,7 +81,7 @@ int msgget(key_t key, int msgflg);
 ```
 
 
-## seventh seminar
+## <ins>Seventh seminar</ins>
 
 ```my_boat.c``` - programm - realisation of trip on the boat. 
 
@@ -100,7 +105,7 @@ And also treee atomic operations written by myself (see in ```semaphors.h```).
 
 
 
-## eighth seminar
+## <ins>Eighth seminar</ins>
 
 ```my_client.c``` and ```my_server.c``` - program - simulation of working real server with calls from client.
 
@@ -122,7 +127,7 @@ void *shmat(int shmid, const void *shmaddr, int shmflg);
 
 And also treee atomic operations written by myself (see in ```semaphors.h```).
 
-## Program from control work (bridge_simulation)
+## <ins>Bridge simulation</ins>
 
 ```bridge_simulation.c``` - its a program-simalution of collision resolution between car and ship on the bridge.
 
